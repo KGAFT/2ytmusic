@@ -2,31 +2,31 @@
 
 **[Русский язык](README.md)**
 
-Transfer liked tracks from Yandex.Music to YouTube Music.
+Transfer liked tracks file to YouTube Music.
 
 ## Program Interface
 
 ```bash
 python main.py --help                                                         
-usage: main.py [-h] [--yandex YANDEX] [--output OUTPUT] [--youtube YOUTUBE]
+usage: main.py [-h] [--file FILE] [--output OUTPUT] [--youtube YOUTUBE]
 
-Transfer tracks from Yandex.Music to YouTube Music
+Transfer tracks from file to YouTube Music
 
 options:
   -h, --help         show this help message and exit
-  --yandex YANDEX    Yandex Music token
+  --file FILE        File with liked tracks. You can find example in root of project
   --output OUTPUT    Output json file
   --youtube YOUTUBE  Youtube Music credentials file. If file not exists, it will be created.
 ```
 
 ## Usage
 
-1. [Get Yandex Music token](https://yandex-music.readthedocs.io/en/main/token.html). It is easiest to do this with the application.
+1. [Obtain your playlist as a file] with artist names and track titles. To export a playlist (including your favorite tracks) from Yandex Music to a suitable file, you can use the service: https://file.u-pov.ru/programs/YandexMusicExport/
 2. Install dependencies and run the program:
 
 ```bash
 pip install -r requirements.txt
-python main.py --yandex <Yandex Music token>
+python main.py --youtube <Path to file where youtube credentials will be stored> --file <Path to file with tracks>
 ```
 
 3. When starting the program, follow the provided link to authorize in YouTube Music, allow access to the account, and press `Enter` to continue.
@@ -34,7 +34,7 @@ python main.py --yandex <Yandex Music token>
 
 ```json
 {
-    // liked tracks in Yandex Music
+    // tracks from your file
     "liked_tracks":[
         {
             "artist": "Artist",
@@ -50,10 +50,8 @@ python main.py --yandex <Yandex Music token>
 
 ## Resources Used
 
-- yandex-music - unofficial python API for Yandex.Music
 - ytmusicapi - unofficial python API for YouTube Music
 
 ### P.S.
 
-I wrote this script because I couldn't find anything similar online.
-I'll be happy with pull requests and stars :-)
+This fork was created due to the failure of the yandex-music API. And also in order to increase the coverage of services from which you can import tracks.

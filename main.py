@@ -1,16 +1,15 @@
 import argparse
 import json
 
-from core import YandexMusicExporter
 from core import YoutubeImoirter
-
+from core import Track
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Transfer tracks from Yandex.Music to YouTube Music'
+        description='Transfer tracks from file to YouTube Music'
     )
     parser.add_argument(
-        '--yandex', type=str, help='Yandex Music token'
+        '--file', type=str, help='File with liked tracks. You can find example in root of project'
     )
     parser.add_argument(
         '--output', type=str, default='tracks.json', help='Output json file'
@@ -23,16 +22,19 @@ def parse_args() -> argparse.Namespace:
 
 
 def move_tracks(
-        importer: YandexMusicExporter, exporter: YoutubeImoirter, out_path: str
+        fileWithTracks: str, exporter: YoutubeImoirter, out_path: str
     ) -> None:
     data = {
         'liked_tracks': [],
         'not_found': [],
         'errors': [],
     }
-    
-    print('Exporting liked tracks from Yandex Music...')
-    tracks = importer.export_liked_tracks()
+    tracks = []
+    file = open(fileWithTracks).readlines()
+    for i in range(len(file)):
+        args = file[i].split("-")
+        tracks.append(Track(args[0], args[1][:-1]))
+    print('Importing liked tracks to Youtube Music...')
     tracks.reverse()
 
     for track in tracks:
@@ -66,9 +68,8 @@ def move_tracks(
 
 def main() -> None:
     args = parse_args()
-    importer = YandexMusicExporter(args.yandex)
     exporter = YoutubeImoirter(args.youtube)
-    move_tracks(importer, exporter, args.output)
+    move_tracks(args.file, exporter, args.output)
 
 
 if __name__ == '__main__':

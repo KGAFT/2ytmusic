@@ -23,20 +23,26 @@ class YoutubeImoirter:
         with tqdm(total=len(tracks), position=0, desc='Import tracks') as pbar:
             with tqdm(total=0, bar_format='{desc}', position=1) as trank_log:
                 for track in tracks:
-                    results = self.ytmusic.search(f'{track.artist} {track.name}')
-                    if len(results) == 0:
-                        not_found.append(track)
-                        continue
+                    success = False
+                    while(not(success)):
+                        try:
+                            results = self.ytmusic.search(f'{track.artist} {track.name}')
+                            if len(results) == 0:
+                                not_found.append(track)
+                                continue
                     
-                    result = self._get_best_result(results, track)
-                    try:
-                        self.ytmusic.rate_song(result['videoId'], 'LIKE')
-                    except Exception as e:
-                        errors.append(track)
-                        pbar.write(f'Error: {track.artist} - {track.name}, {e}')
-                    pbar.update(1)
-                    trank_log.set_description_str(f'{track.artist} - {track.name}')
-
+                            result = self._get_best_result(results, track)
+                            try:
+                                self.ytmusic.rate_song(result['videoId'], 'LIKE')
+                            except Exception as e:
+                                errors.append(track)
+                                pbar.write(f'Error: {track.artist} - {track.name}, {e}')
+                            pbar.update(1)
+                            trank_log.set_description_str(f'{track.artist} - {track.name}')
+                            success = True
+                        except Exception as e:
+                            print(e)
+                            success = False
                 return not_found, errors
     
     def _get_best_result(self, results: List[dict], track: Track) -> dict:
